@@ -145,23 +145,16 @@
                                                 </Border.StrokeShape>
                                                 <Image Source="icono_curso.png" WidthRequest="17" HeightRequest="17"/>
                                             </Border>
-                                            <!--NUEVO: Picker = desplegable. Title es el texto que sale antes de elegir.
-                                                Las opciones se escriben dentro de Picker.Items (una por línea)-->
-                                            <Picker x:Name="pCurso" Grid.Column="1" Title="Elige el curso" FontSize="16"
+                                            <!--NUEVO: Picker = desplegable. Las opciones van dentro de Picker.Items.
+                                                SelectedIndex="0" hace que salga elegida la primera opción (2º DAM).
+                                                Sin Title: en Windows el Title se pone encima y el desplegable no cabe-->
+                                            <Picker x:Name="pCurso" Grid.Column="1" SelectedIndex="0" FontSize="16"
                                                     TextColor="{StaticResource TextoPrincipal}"
-                                                    TitleColor="{StaticResource TextoSecundario}"
-                                                    BackgroundColor="Transparent" VerticalOptions="Center">
+                                                    BackgroundColor="Transparent"
+                                                    HorizontalOptions="Fill" VerticalOptions="Center">
                                                 <Picker.Items>
-                                                    <x:String>1º ESO</x:String>
-                                                    <x:String>2º ESO</x:String>
-                                                    <x:String>3º ESO</x:String>
-                                                    <x:String>4º ESO</x:String>
-                                                    <x:String>1º Bachillerato</x:String>
-                                                    <x:String>2º Bachillerato</x:String>
-                                                    <x:String>1º SMR</x:String>
-                                                    <x:String>2º SMR</x:String>
-                                                    <x:String>1º DAM</x:String>
                                                     <x:String>2º DAM</x:String>
+                                                    <x:String>2º DAW</x:String>
                                                 </Picker.Items>
                                             </Picker>
                                         </Grid>

@@ -83,7 +83,7 @@ public partial class InscripcionTorneo : ContentPage
             eGeducaand.Text = "";
             eNombre.Text = "";
             eApellidos.Text = "";
-            pCurso.SelectedIndex = -1;      // El desplegable vuelve a "Elige el curso"
+            pCurso.SelectedIndex = 0;      // El desplegable vuelve a "Elige el curso"
             ActualizarLista();
         }
         catch (Exception error)
