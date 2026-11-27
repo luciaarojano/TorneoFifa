@@ -4,6 +4,13 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TorneoFifa"
+    xmlns:views="clr-namespace:TorneoFifa.Views"
+    FlyoutBehavior="{OnPlatform Default=Flyout, WinUI=Locked}"
+    FlyoutWidth="260"
+    FlyoutBackgroundColor="{StaticResource FondoMenu}"
+    Shell.BackgroundColor="{StaticResource FondoMenu}"
+    Shell.TitleColor="{StaticResource TextoPrincipal}"
+    Shell.ForegroundColor="{StaticResource TextoPrincipal}"
     Title="TorneoFifa">
 
     <ShellContent
