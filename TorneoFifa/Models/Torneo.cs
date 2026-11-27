@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TorneoFifa.Enums;
+using TorneoFifa.Enums;     // Para poder usar la enumeración TipoTorneo
 
 namespace TorneoFifa.Models
 {
@@ -20,7 +20,7 @@ namespace TorneoFifa.Models
         // MIEMBROS PRIVADOS
         private TipoTorneo _nombre;                 // Navidad, SemanaSanta o FinCurso
         private string _anio = "";                  // Año como String (pizarra)
-        private int _numParticipantes;              // Debe ser potencia de 2 (2^n)
+        private int _numParticipantes;              // Plazas del torneo: potencia de 2 (2^n)
         private int _numRondas;                     // Es la n de 2^n
         private bool _activo;
         private List<Participante> _participantes;  // Relación Torneo 1 -> (2,n) Participante
@@ -89,6 +89,83 @@ namespace TorneoFifa.Models
         {
             get { return _participantes; }
         }
+
+        /// <summary>
+        /// NUEVO (inscripción): plazas que quedan libres en el torneo (solo lectura)
+        /// </summary>
+        public int PlazasLibres
+        {
+            get { return _numParticipantes - _participantes.Count; }
+        }
+
+        #region METODOS PUBLICOS
+
+        /// <summary>
+        /// NUEVO (inscripción): inscribe un participante en el torneo
+        /// </summary>
+        /// <param name="participante">Participante que se inscribe</param>
+        /// <exception cref="ArgumentException"></exception>
+        public void InscribirParticipante(Participante participante)
+        {
+            // 1.- Comprobación de que el torneo está activo
+            if (!_activo)
+                throw new ArgumentException("ERROR: El torneo no está activo");
+
+            // 2.- Comprobación de que quedan plazas libres
+            if (PlazasLibres == 0)
+                throw new ArgumentException($"ERROR: El torneo está completo ({_numParticipantes} plazas)");
+
+            // 3.- Comprobación de que el usuario de educaand no está ya inscrito (UNIQUE en la BD)
+            if (BuscarParticipante(participante.Geducaand) != null)
+                throw new ArgumentException($"ERROR: El usuario {participante.Geducaand} ya está inscrito");
+
+            // 4.- Se añade a la lista de participantes
+            _participantes.Add(participante);
+        }
+
+        /// <summary>
+        /// NUEVO (inscripción): quita del torneo al participante con ese usuario de educaand
+        /// </summary>
+        /// <param name="geducaand">Usuario de educaand del participante</param>
+        /// <exception cref="ArgumentException"></exception>
+        public void EliminarParticipante(string geducaand)
+        {
+            // Recursos
+            Participante? participante;    // El "?" indica que puede quedar vacío (null) si no se encuentra
+
+            // 1.- Comprobación de que se ha indicado un usuario
+            if (string.IsNullOrEmpty(geducaand))
+                throw new ArgumentException("ERROR: No ha indicado el usuario de educaand");
+
+            // 2.- Búsqueda del participante
+            participante = BuscarParticipante(geducaand);
+            if (participante == null)
+                throw new ArgumentException($"ERROR: El usuario {geducaand} no está inscrito");
+
+            // 3.- Se quita de la lista
+            _participantes.Remove(participante);
+        }
+
+        /// <summary>
+        /// NUEVO (inscripción): busca un participante por su usuario de educaand
+        /// (sin distinguir mayúsculas de minúsculas)
+        /// </summary>
+        /// <param name="geducaand">Usuario de educaand a buscar</param>
+        /// <returns>El participante, o null si no está inscrito</returns>
+        public Participante? BuscarParticipante(string geducaand)
+        {
+            // Recorrido de la lista de participantes
+            foreach (Participante participante in _participantes)
+            {
+                if (participante.Geducaand.ToUpper() == geducaand.Trim().ToUpper())
+                    return participante;
+            }
+
+            // Si se recorre toda la lista sin encontrarlo, no está inscrito
+            return null;
+        }
+
+        #endregion
 
         #region METODOS PRIVADOS
 
