@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="260" viewBox="0 0 800 260">
+<defs>
+<radialGradient id="glowe" cx="50%" cy="100%" r="80%"><stop offset="0" stop-color="#7B6BFF" stop-opacity="0.55"></stop><stop offset="1" stop-color="#0C0B14" stop-opacity="0"></stop></radialGradient>
+<linearGradient id="beame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.35"></stop><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"></stop></linearGradient>
+<linearGradient id="grasse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F6B4A"></stop><stop offset="1" stop-color="#0E3A2A"></stop></linearGradient>
+<linearGradient id="skye" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B1240"></stop><stop offset="1" stop-color="#2E1F73"></stop></linearGradient>
+</defs>
+<rect width="800" height="260" fill="url(#skye)"></rect>
+<polygon points="32.0,0 96.0,0 420.0,260 260.0,260" fill="url(#beame)"></polygon>
+<polygon points="704.0,0 768.0,0 540.0,260 380.0,260" fill="url(#beame)"></polygon>
+<circle cx="64.0" cy="10" r="10" fill="#FFFFFF" opacity="0.9"></circle>
+<circle cx="736.0" cy="10" r="10" fill="#FFFFFF" opacity="0.9"></circle>
+<path d="M0 135.2 Q 400.0 98.8 800 135.2 L 800 161.2 Q 400.0 130.0 0 161.2 Z" fill="#0F0C26" opacity="0.9"></path>
+<polygon points="112.0,156.0 688.0,156.0 800,260 0,260" fill="url(#grasse)"></polygon>
+<g stroke="#FFFFFF" stroke-opacity="0.35" fill="none" stroke-width="1.5">
+<polygon points="144.0,163.8 656.0,163.8 784.0,260 16.0,260"></polygon>
+<line x1="400.0" y1="163.8" x2="400.0" y2="260"></line>
+<ellipse cx="400.0" cy="208.0" rx="88.0" ry="18.2"></ellipse>
+</g>
+<rect width="800" height="260" fill="url(#glowe)"></rect>
+</svg>

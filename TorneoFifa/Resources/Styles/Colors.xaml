@@ -41,4 +41,31 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- ===== TEMA TORNEO FIFA (añadido para la interfaz del torneo) ===== -->
+    <Color x:Key="FondoApp">#0C0B14</Color>
+    <!-- fondo de las páginas -->
+    <Color x:Key="FondoMenu">#12111D</Color>
+    <!-- menú lateral y barra superior -->
+    <Color x:Key="FondoTarjeta">#181726</Color>
+    <!-- tarjetas -->
+    <Color x:Key="FondoCampo">#110F1B</Color>
+    <!-- cajas de texto -->
+    <Color x:Key="BordeTarjeta">#29273F</Color>
+    <!-- bordes -->
+    <Color x:Key="TextoPrincipal">#F5F4FB</Color>
+    <Color x:Key="TextoSecundario">#ABA9C2</Color>
+    <Color x:Key="Violeta">#6C5CE7</Color>
+    <!-- color de acento -->
+    <Color x:Key="VioletaClaro">#B0A6F7</Color>
+    <Color x:Key="RojoError">#F0475A</Color>
+    <Color x:Key="VerdeOk">#34D399</Color>
+    <Color x:Key="Dorado">#F5C451</Color>
+
+    <!-- Degradado violeta de los botones, el logo y el pie del menú -->
+    <LinearGradientBrush x:Key="DegradadoVioleta" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#3A2C9C" Offset="0.0"/>
+        <GradientStop Color="#6C5CE7" Offset="0.55"/>
+        <GradientStop Color="#9A5BE6" Offset="1.0"/>
+    </LinearGradientBrush>
 </ResourceDictionary>

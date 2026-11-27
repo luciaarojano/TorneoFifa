@@ -13,9 +13,83 @@
     Shell.ForegroundColor="{StaticResource TextoPrincipal}"
     Title="TorneoFifa">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+
+    <!--xmlns:views → permite usar las páginas de la carpeta Views
+        FlyoutBehavior con OnPlatform → en Windows el menú está siempre abierto (Locked),
+                                        en Android es flotante (las tres rayas)
+        Shell.BackgroundColor / TitleColor / ForegroundColor → colores de la barra superior-->
+
+    <!--CABECERA DEL MENÚ: logo + nombre "TorneoFifa" (Fifa en violeta)-->
+    <Shell.FlyoutHeader>
+        <HorizontalStackLayout Padding="20,26,20,22" Spacing="10">
+            <Border WidthRequest="36" HeightRequest="36" StrokeThickness="0"
+                    Background="{StaticResource DegradadoVioleta}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10"/>
+                </Border.StrokeShape>
+                <Image Source="logo_mando.png" WidthRequest="20" HeightRequest="20"/>
+            </Border>
+            <!--NUEVO: FormattedText permite poner trozos de texto (Span) con distinto color-->
+            <Label FontSize="22" FontAttributes="Bold" VerticalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Torneo" TextColor="{StaticResource TextoPrincipal}"/>
+                        <Span Text="Fifa" TextColor="{StaticResource VioletaClaro}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </HorizontalStackLayout>
+    </Shell.FlyoutHeader>
+
+    <!--PLANTILLA DE CADA OPCIÓN DEL MENÚ: icono + texto.
+        NUEVO: VisualStateManager cambia el fondo a violeta cuando la opción está seleccionada (Selected)-->
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="16,0" Margin="14,2" HeightRequest="46">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Violeta}"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </VisualStateManager.VisualStateGroups>
+                <!--{Binding ...} → toma el icono y el título de cada FlyoutItem-->
+                <Image Source="{Binding FlyoutIcon}" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
+                <Label Grid.Column="1" Text="{Binding Title}" TextColor="White" FontSize="14"
+                       FontAttributes="Bold" VerticalOptions="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <!--OPCIONES DEL MENÚ: una por pantalla. Las siguientes
+        (Inscripción, Emparejamientos, Resultados, Clasificación) se añadirán aquí-->
+    <FlyoutItem Title="Registro de torneo" Icon="icono_registro.png">
+        <ShellContent Title="Nuevo torneo"
+                      ContentTemplate="{DataTemplate views:RegistroTorneo}" />
+    </FlyoutItem>
+
+    <!--PIE DEL MENÚ: tarjeta con el mando dibujado-->
+    <Shell.FlyoutFooter>
+        <Border Margin="16,16,16,20" HeightRequest="190" StrokeThickness="0" Padding="16"
+                Background="{StaticResource DegradadoVioleta}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="16"/>
+            </Border.StrokeShape>
+            <Grid RowDefinitions="*,Auto,Auto">
+                <Image Source="mando.png" HeightRequest="100" HorizontalOptions="Center" VerticalOptions="Start"/>
+                <Label Grid.Row="1" Text="Torneo FIFA del instituto" FontSize="15" FontAttributes="Bold" TextColor="White"/>
+                <Label Grid.Row="2" Text="IES Luis Carrillo de Sotomayor" FontSize="12" TextColor="#E0FFFFFF"/>
+            </Grid>
+        </Border>
+    </Shell.FlyoutFooter>
 
 </Shell>

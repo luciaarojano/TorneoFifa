@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TorneoFifa.Views.RegistroTorneo"
+             Title="RegistroTorneo"
+             BackgroundColor="{StaticResource FondoApp}">
+
+    <!--Diccionario de recursos de la página-->
+    <ContentPage.Resources>
+        <!--Espaciado entre bloques (valor fijo: StaticResource)-->
+        <x:Double x:Key="espaciado">18</x:Double>
+    </ContentPage.Resources>
+
+    <!--ScrollView: en Android la pantalla es más alta que el móvil y hay que poder bajar-->
+    <ScrollView>
+
+        <!--GRID PRINCIPAL
+            Windows (WinUI): 2 columnas  -> izquierda: vista previa + formulario | derecha: rondas + inscripción
+            Android:         1 columna   -> todo apilado hacia abajo
+            OnPlatform elige un valor distinto según la plataforma (visto en la Relación 10)-->
+        <Grid x:Name="gridPrincipal"
+              Padding="{OnPlatform Default='16,8,16,24', WinUI='30,26'}"
+              ColumnDefinitions="{OnPlatform Default='*', WinUI='3*,2*'}"
+              RowDefinitions="{OnPlatform Default='Auto,Auto,Auto', WinUI='Auto,Auto'}"
+              ColumnSpacing="20"
+              RowSpacing="{StaticResource espaciado}">
+
+            <!-- Fila 0: CABECERA (en Windows ocupa las 2 columnas) -->
+            <VerticalStackLayout Grid.Row="0" Grid.Column="0"
+                                 Grid.ColumnSpan="{OnPlatform Default=1, WinUI=2}"
+                                 Spacing="4">
+                <Label Text="GESTIÓN DE TORNEOS" FontSize="12" FontAttributes="Bold"
+                       TextColor="{StaticResource VioletaClaro}"/>
+                <Label Text="Registra un nuevo torneo" FontSize="{OnPlatform Default=24, WinUI=28}"
+                       FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"/>
+                <Label Text="Configura el torneo y prepara el cuadro de eliminatorias"
+                       FontSize="14" TextColor="{StaticResource TextoSecundario}"/>
+            </VerticalStackLayout>
+
+            <!-- Fila 1, columna 0: VISTA PREVIA + FORMULARIO -->
+            <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="{StaticResource espaciado}">
+
+                <!--TARJETA VISTA PREVIA (estilo marcador)
+                    NUEVO: Border = contenedor con bordes redondeados (StrokeShape)-->
+                <Border x:Name="brdVistaPrevia"
+                        HeightRequest="{OnPlatform Default=180, WinUI=214}"
+                        Stroke="#3A2C9C" StrokeThickness="1" Padding="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <!--NUEVO: sombra violeta debajo de la tarjeta-->
+                    <Border.Shadow>
+                        <Shadow Brush="#3C28AA" Opacity="0.5" Radius="30" Offset="0,12"/>
+                    </Border.Shadow>
+
+                    <!--Grid con 2 capas: la imagen del estadio de fondo y el contenido encima-->
+                    <Grid>
+                        <!--Capa 1: ilustración del estadio (Resources/Images/estadio.svg)-->
+                        <Image Source="estadio.png" Aspect="AspectFill"/>
+
+                        <!--Capa 2: contenido-->
+                        <Grid Padding="{OnPlatform Default='16,14', WinUI='22,18'}" RowDefinitions="Auto,*">
+
+                            <!--Fila superior: título pequeño + etiqueta de estado-->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Vista previa del torneo" FontSize="12" FontAttributes="Bold"
+                                       TextColor="White" VerticalOptions="Center"/>
+                                <Border Grid.Column="1" BackgroundColor="#73140E30" StrokeThickness="0" Padding="11,5">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="999"/>
+                                    </Border.StrokeShape>
+                                    <!--Borrador (dorado) / Activo (verde): se cambia desde el código-->
+                                    <Label x:Name="lEstado" Text="Borrador" FontSize="12" FontAttributes="Bold"
+                                           TextColor="{StaticResource Dorado}"/>
+                                </Border>
+                            </Grid>
+
+                            <!--Marcador: insignia Participantes | 8 · 3 | insignia Rondas-->
+                            <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                                                   Spacing="{OnPlatform Default=12, WinUI=28}">
+
+                                <VerticalStackLayout Spacing="8" WidthRequest="{OnPlatform Default=80, WinUI=110}">
+                                    <Border WidthRequest="{OnPlatform Default=46, WinUI=60}" HeightRequest="{OnPlatform Default=46, WinUI=60}"
+                                            BackgroundColor="#1FFFFFFF" Stroke="#80FFFFFF" StrokeThickness="2">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="999"/>
+                                        </Border.StrokeShape>
+                                        <Image Source="icono_usuarios_blanco.png" WidthRequest="26" HeightRequest="26"/>
+                                    </Border>
+                                    <Label Text="Participantes" FontSize="12" FontAttributes="Bold"
+                                           TextColor="White" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                    <!--Se rellena desde el código: "8 · 3" (participantes · rondas)-->
+                                    <Label x:Name="lMarcador" Text="– · –" FontSize="{OnPlatform Default=34, WinUI=56}"
+                                           FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+                                    <Label x:Name="lNombreTorneo" Text="Elige un torneo" FontSize="15"
+                                           FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+                                    <Label Text="Eliminatoria directa" FontSize="11"
+                                           TextColor="#CCFFFFFF" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout Spacing="8" WidthRequest="{OnPlatform Default=80, WinUI=110}">
+                                    <Border WidthRequest="{OnPlatform Default=46, WinUI=60}" HeightRequest="{OnPlatform Default=46, WinUI=60}"
+                                            BackgroundColor="#1FFFFFFF" Stroke="#80FFFFFF" StrokeThickness="2">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="999"/>
+                                        </Border.StrokeShape>
+                                        <Image Source="icono_cuadro.png" WidthRequest="26" HeightRequest="26"/>
+                                    </Border>
+                                    <Label Text="Rondas" FontSize="12" FontAttributes="Bold"
+                                           TextColor="White" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!--TARJETA FORMULARIO (se oculta al registrar el torneo)-->
+                <Border x:Name="brdFormulario" BackgroundColor="{StaticResource FondoTarjeta}"
+                        Stroke="{StaticResource BordeTarjeta}" StrokeThickness="1" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="14">
+
+                        <Label Text="Datos del torneo" FontSize="15" FontAttributes="Bold"
+                               TextColor="{StaticResource TextoPrincipal}"/>
+
+                        <!--Aviso de error: oculto hasta que haya un error-->
+                        <Border x:Name="brdError" IsVisible="False" BackgroundColor="#1FF0475A"
+                                Stroke="#73F0475A" StrokeThickness="1" Padding="14,11">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <Label x:Name="lError" FontSize="14" FontAttributes="Bold" TextColor="#FF8A97"/>
+                        </Border>
+
+                        <!--TARJETAS DE TIPO DE TORNEO (sustituyen al Picker)
+                            NUEVO: TapGestureRecognizer hace que un Border se pueda pulsar como un botón.
+                            Las 3 llaman al mismo manejador (TipoTapped) y se distinguen por su StyleId-->
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+
+                            <Border x:Name="brdNavidad" StyleId="Navidad" Grid.Column="0"
+                                    HeightRequest="{OnPlatform Default=92, WinUI=104}" StrokeThickness="0" Padding="12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14"/>
+                                </Border.StrokeShape>
+                                <!--NUEVO: fondo en degradado-->
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#2B3FC7" Offset="0.0"/>
+                                        <GradientStop Color="#6C5CE7" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TipoTapped"/>
+                                </Border.GestureRecognizers>
+                                <Grid>
+                                    <!--Icono grande y transparente de adorno-->
+                                    <Image Source="icono_nieve.png" WidthRequest="70" HeightRequest="70" Opacity="0.22"
+                                           HorizontalOptions="End" VerticalOptions="Start" Margin="0,-14,-20,0"/>
+                                    <VerticalStackLayout VerticalOptions="End" Spacing="8">
+                                        <Image Source="icono_nieve.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Start"/>
+                                        <Label Text="Navidad" FontSize="14" FontAttributes="Bold" TextColor="White"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+
+                            <Border x:Name="brdSemanaSanta" StyleId="SemanaSanta" Grid.Column="1"
+                                    HeightRequest="{OnPlatform Default=92, WinUI=104}" StrokeThickness="0" Padding="12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14"/>
+                                </Border.StrokeShape>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#E8792B" Offset="0.0"/>
+                                        <GradientStop Color="#D9468F" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TipoTapped"/>
+                                </Border.GestureRecognizers>
+                                <Grid>
+                                    <Image Source="icono_sol.png" WidthRequest="70" HeightRequest="70" Opacity="0.22"
+                                           HorizontalOptions="End" VerticalOptions="Start" Margin="0,-14,-20,0"/>
+                                    <VerticalStackLayout VerticalOptions="End" Spacing="8">
+                                        <Image Source="icono_sol.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Start"/>
+                                        <Label Text="Semana Santa" FontSize="14" FontAttributes="Bold" TextColor="White"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+
+                            <Border x:Name="brdFinCurso" StyleId="FinCurso" Grid.Column="2"
+                                    HeightRequest="{OnPlatform Default=92, WinUI=104}" StrokeThickness="0" Padding="12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14"/>
+                                </Border.StrokeShape>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#0F9C8C" Offset="0.0"/>
+                                        <GradientStop Color="#2FB86A" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TipoTapped"/>
+                                </Border.GestureRecognizers>
+                                <Grid>
+                                    <Image Source="icono_birrete.png" WidthRequest="70" HeightRequest="70" Opacity="0.22"
+                                           HorizontalOptions="End" VerticalOptions="Start" Margin="0,-14,-20,0"/>
+                                    <VerticalStackLayout VerticalOptions="End" Spacing="8">
+                                        <Image Source="icono_birrete.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Start"/>
+                                        <Label Text="Fin de Curso" FontSize="14" FontAttributes="Bold" TextColor="White"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <!--CAMPOS: en Windows uno al lado del otro, en Android uno debajo del otro-->
+                        <Grid ColumnDefinitions="{OnPlatform Default='*', WinUI='*,*'}"
+                              RowDefinitions="{OnPlatform Default='Auto,Auto', WinUI='Auto'}"
+                              ColumnSpacing="14" RowSpacing="14">
+
+                            <!--Campo Año-->
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="8">
+                                <Label Text="Año" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"/>
+                                <Border x:Name="brdAnio" BackgroundColor="{StaticResource FondoCampo}"
+                                        Stroke="{StaticResource BordeTarjeta}" StrokeThickness="1"
+                                        HeightRequest="50" Padding="9,0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12"/>
+                                    </Border.StrokeShape>
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                        <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#2E6C5CE7"
+                                                StrokeThickness="0" VerticalOptions="Center">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="9"/>
+                                            </Border.StrokeShape>
+                                            <Image Source="icono_calendario.png" WidthRequest="17" HeightRequest="17"/>
+                                        </Border>
+                                        <!--NUEVO: TextChanged se lanza cada vez que cambia el texto (para la vista previa)-->
+                                        <Entry x:Name="eAnio" Grid.Column="1" Placeholder="2026" Keyboard="Numeric" MaxLength="4"
+                                               FontSize="17" FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"
+                                               VerticalOptions="Center" TextChanged="DatosTextChanged"/>
+                                    </Grid>
+                                </Border>
+                                <Label Text="4 dígitos · año actual o posterior" FontSize="12"
+                                       TextColor="{StaticResource TextoSecundario}"/>
+                            </VerticalStackLayout>
+
+                            <!--Campo Nº de participantes-->
+                            <VerticalStackLayout Grid.Row="{OnPlatform Default=1, WinUI=0}"
+                                                 Grid.Column="{OnPlatform Default=0, WinUI=1}" Spacing="8">
+                                <Label Text="Nº de participantes" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"/>
+                                <Border x:Name="brdNum" BackgroundColor="{StaticResource FondoCampo}"
+                                        Stroke="{StaticResource BordeTarjeta}" StrokeThickness="1"
+                                        HeightRequest="50" Padding="9,0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12"/>
+                                    </Border.StrokeShape>
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                        <Border WidthRequest="32" HeightRequest="32" BackgroundColor="#2E6C5CE7"
+                                                StrokeThickness="0" VerticalOptions="Center">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="9"/>
+                                            </Border.StrokeShape>
+                                            <Image Source="icono_usuarios.png" WidthRequest="17" HeightRequest="17"/>
+                                        </Border>
+                                        <Entry x:Name="eNumParticipantes" Grid.Column="1" Placeholder="8" Keyboard="Numeric"
+                                               FontSize="17" FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"
+                                               VerticalOptions="Center" TextChanged="DatosTextChanged"/>
+                                    </Grid>
+                                </Border>
+                                <Label Text="Potencia de 2: 2, 4, 8, 16…" FontSize="12"
+                                       TextColor="{StaticResource TextoSecundario}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!--Botón principal con degradado y sombra-->
+                        <Button x:Name="bRegistrar" Text="Registrar torneo  →"
+                                Background="{StaticResource DegradadoVioleta}" TextColor="White"
+                                FontSize="15" FontAttributes="Bold" CornerRadius="12" HeightRequest="50"
+                                Clicked="RegistrarClick">
+                            <Button.Shadow>
+                                <Shadow Brush="#6C5CE7" Opacity="0.45" Radius="20" Offset="0,8"/>
+                            </Button.Shadow>
+                        </Button>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--TARJETA TORNEO REGISTRADO (oculta hasta registrar)-->
+                <Border x:Name="brdExito" IsVisible="False" BackgroundColor="{StaticResource FondoTarjeta}"
+                        Stroke="{StaticResource BordeTarjeta}" StrokeThickness="1" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                            <Image Source="trofeo.png" WidthRequest="{OnPlatform Default=80, WinUI=110}"
+                                   HeightRequest="{OnPlatform Default=80, WinUI=110}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                <Label Text="✓ Registrado correctamente" FontSize="12" FontAttributes="Bold"
+                                       TextColor="{StaticResource VerdeOk}"/>
+                                <Label x:Name="lTituloExito" FontSize="{OnPlatform Default=20, WinUI=26}"
+                                       FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"/>
+                                <Label x:Name="lTextoExito" FontSize="14" TextColor="{StaticResource TextoSecundario}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!--Resumen en 3 cajas: participantes, rondas y estado-->
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                            <Border BackgroundColor="{StaticResource FondoCampo}" Stroke="{StaticResource BordeTarjeta}" Padding="14,12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label x:Name="lExitoParticipantes" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"/>
+                                    <Label Text="Participantes" FontSize="12" TextColor="{StaticResource TextoSecundario}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="1" BackgroundColor="{StaticResource FondoCampo}" Stroke="{StaticResource BordeTarjeta}" Padding="14,12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label x:Name="lExitoRondas" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource TextoPrincipal}"/>
+                                    <Label Text="Rondas" FontSize="12" TextColor="{StaticResource TextoSecundario}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="2" BackgroundColor="{StaticResource FondoCampo}" Stroke="{StaticResource BordeTarjeta}" Padding="14,12">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="14"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="● Activo" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource VerdeOk}"/>
+                                    <Label Text="Estado" FontSize="12" TextColor="{StaticResource TextoSecundario}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="3*,2*" ColumnSpacing="12">
+                            <Button x:Name="bInscribir" Text="Inscribir participantes  →"
+                                    Background="{StaticResource DegradadoVioleta}" TextColor="White"
+                                    FontAttributes="Bold" CornerRadius="12" HeightRequest="50"
+                                    Clicked="InscribirClick"/>
+                            <Button x:Name="bOtro" Grid.Column="1" Text="Registrar otro"
+                                    BackgroundColor="#0AFFFFFF" BorderColor="{StaticResource BordeTarjeta}" BorderWidth="1"
+                                    TextColor="{StaticResource TextoPrincipal}" CornerRadius="12" HeightRequest="50"
+                                    Clicked="OtroTorneoClick"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Windows: fila 1, columna 1  |  Android: fila 2, columna 0 -->
+            <VerticalStackLayout Grid.Row="{OnPlatform Default=2, WinUI=1}"
+                                 Grid.Column="{OnPlatform Default=0, WinUI=1}"
+                                 Spacing="{StaticResource espaciado}">
+
+                <!--TARJETA RONDAS DEL CUADRO: las filas se generan desde el código (MostrarRondas)-->
+                <Border BackgroundColor="{StaticResource FondoTarjeta}" Stroke="{StaticResource BordeTarjeta}"
+                        StrokeThickness="1" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Rondas del cuadro" FontSize="15" FontAttributes="Bold"
+                               TextColor="{StaticResource TextoPrincipal}"/>
+                        <VerticalStackLayout x:Name="slRondas" Spacing="2"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--TARJETA INSCRIPCIÓN: barra de progreso de jugadores inscritos-->
+                <Border BackgroundColor="{StaticResource FondoTarjeta}" Stroke="{StaticResource BordeTarjeta}"
+                        StrokeThickness="1" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18"/>
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Inscripción" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource TextoPrincipal}"/>
+                            <Label x:Name="lInscritos" Grid.Column="1" Text="0 / – inscritos" FontSize="13"
+                                   FontAttributes="Bold" TextColor="{StaticResource VioletaClaro}"/>
+                        </Grid>
+                        <!--NUEVO: ProgressBar (0 = vacía, 1 = llena)-->
+                        <ProgressBar x:Name="pbInscripcion" Progress="0" ProgressColor="{StaticResource Violeta}"/>
+                        <Label x:Name="lEstadoInscripcion" Text="Se abre al registrar el torneo" FontSize="12"
+                               TextColor="{StaticResource TextoSecundario}"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>
