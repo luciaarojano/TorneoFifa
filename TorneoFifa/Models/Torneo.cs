@@ -101,7 +101,7 @@ namespace TorneoFifa.Models
         #region METODOS PUBLICOS
 
         /// <summary>
-        /// NUEVO (inscripción): inscribe un participante en el torneo
+        /// Inscribe un participante en el torneo
         /// </summary>
         /// <param name="participante">Participante que se inscribe</param>
         /// <exception cref="ArgumentException"></exception>
@@ -117,16 +117,21 @@ namespace TorneoFifa.Models
 
             // 3.- Comprobación de que el usuario de educaand no está ya inscrito (UNIQUE en la BD)
             if (BuscarParticipante(participante.Geducaand) != null)
-                throw new ArgumentException($"ERROR: El usuario {participante.Geducaand} ya está inscrito");
+                throw new ArgumentException($"ERROR: El usuario {participante.Usuario} ya está inscrito");
 
-            // 4.- Se añade a la lista de participantes
+            // 4.- Comprobación de que no hay otro jugador con el mismo nombre y apellidos
+            //     (sin tener en cuenta mayúsculas, minúsculas ni espacios)
+            if (ExisteNombre(participante.NombreCompleto))
+                throw new ArgumentException($"ERROR: {participante.NombreCompleto} ya está inscrito");
+
+            // 5.- Se añade a la lista de participantes
             _participantes.Add(participante);
         }
 
         /// <summary>
-        /// NUEVO (inscripción): quita del torneo al participante con ese usuario de educaand
+        /// Quita del torneo al participante con ese correo de educaand
         /// </summary>
-        /// <param name="geducaand">Usuario de educaand del participante</param>
+        /// <param name="geducaand">Correo de educaand del participante</param>
         /// <exception cref="ArgumentException"></exception>
         public void EliminarParticipante(string geducaand)
         {
@@ -147,17 +152,17 @@ namespace TorneoFifa.Models
         }
 
         /// <summary>
-        /// NUEVO (inscripción): busca un participante por su usuario de educaand
-        /// (sin distinguir mayúsculas de minúsculas)
+        /// Busca un participante por su correo de educaand
+        /// (sin distinguir mayúsculas de minúsculas y sin tener en cuenta los espacios)
         /// </summary>
-        /// <param name="geducaand">Usuario de educaand a buscar</param>
+        /// <param name="geducaand">Correo de educaand a buscar</param>
         /// <returns>El participante, o null si no está inscrito</returns>
         public Participante? BuscarParticipante(string geducaand)
         {
             // Recorrido de la lista de participantes
             foreach (Participante participante in _participantes)
             {
-                if (participante.Geducaand.ToUpper() == geducaand.Trim().ToUpper())
+                if (Normalizar(participante.Geducaand) == Normalizar(geducaand))
                     return participante;
             }
 
@@ -168,6 +173,32 @@ namespace TorneoFifa.Models
         #endregion
 
         #region METODOS PRIVADOS
+
+        /// <summary>
+        /// Comprueba si ya hay un jugador inscrito con ese nombre completo
+        /// </summary>
+        /// <param name="nombreCompleto">Nombre y apellidos</param>
+        /// <returns>true si ya existe</returns>
+        private bool ExisteNombre(string nombreCompleto)
+        {
+            foreach (Participante participante in _participantes)
+            {
+                if (Normalizar(participante.NombreCompleto) == Normalizar(nombreCompleto))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Prepara un texto para compararlo: sin espacios y en mayúsculas
+        /// (ej. " lucia  Rojano" y "Lucia Rojano" quedan iguales: "LUCIAROJANO")
+        /// </summary>
+        /// <param name="texto">Texto original</param>
+        /// <returns>Texto preparado para comparar</returns>
+        private string Normalizar(string texto)
+        {
+            return texto.Replace(" ", "").ToUpper();
+        }
 
         /// <summary>
         /// Validación del año del torneo: 4 dígitos y año actual o posterior

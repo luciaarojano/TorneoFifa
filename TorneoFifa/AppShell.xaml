@@ -77,6 +77,15 @@
                       ContentTemplate="{DataTemplate views:RegistroTorneo}" />
     </FlyoutItem>
 
+
+    <!--Route = nombre de la página para poder ir a ella desde código
+        (botón "Inscribir participantes" de la página de registro)-->
+    <FlyoutItem Title="Inscripción" Icon="icono_inscripcion.png">
+        <ShellContent Title="Inscripción de jugadores" Route="inscripcion"
+                      ContentTemplate="{DataTemplate views:InscripcionTorneo}" />
+    </FlyoutItem>
+
+
     <!--PIE DEL MENÚ: tarjeta con el mando dibujado-->
     <Shell.FlyoutFooter>
         <Border Margin="16,16,16,20" HeightRequest="190" StrokeThickness="0" Padding="16"

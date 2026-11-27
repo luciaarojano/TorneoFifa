@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls.Shapes;
 using TorneoFifa.Enums;
 using TorneoFifa.Models;
+using TorneoFifa.Services;              // Para poder usar GestionTorneos
 
 namespace TorneoFifa.Views;
 
@@ -104,6 +105,10 @@ public partial class RegistroTorneo : ContentPage
             // 3.- Creación del torneo: la clase Torneo valida el año y los participantes
             torneo = new Torneo(_tipo, eAnio.Text, numParticipantes);
 
+            // 3.1.- Registro del torneo: queda como torneo actual para la Inscripción
+            //       (lanza excepción si ya existe uno con el mismo nombre y año)
+            GestionTorneos.RegistrarTorneo(torneo);
+
             // 4.- Retroalimentación: se muestra la tarjeta de torneo registrado
             //     (más adelante aquí se llamará a la API para guardarlo en la BD)
             MostrarExito(torneo);
@@ -132,13 +137,14 @@ public partial class RegistroTorneo : ContentPage
     }
 
     /// <summary>
-    /// Ocurre al pulsar "Inscribir participantes" (se hará en la siguiente parte del proyecto)
+    /// Ocurre al pulsar "Inscribir participantes": abre la página de Inscripción
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private async void InscribirClick(object sender, EventArgs e)
     {
-        await DisplayAlert("Inscripción", "La inscripción de participantes se hará en la siguiente parte del proyecto.", "Aceptar");
+        // NUEVO: GoToAsync navega a la página con ese Route (definido en AppShell.xaml)
+        await Shell.Current.GoToAsync("//inscripcion");
     }
 
     /// <summary>
